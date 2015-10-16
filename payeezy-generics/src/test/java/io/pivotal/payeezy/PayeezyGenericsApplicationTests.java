@@ -39,8 +39,7 @@ public class PayeezyGenericsApplicationTests {
         assertNotNull("PayeezyRequest is null:", payeezyRequest);
         TransactionRequest transactionRequest = getPrimaryTransaction();
         System.out.println("Credentials: " + credentials.toString());
-        String response=payeezyRequest.post(transactionRequest);
-        logger.info(response);
+        logger.info(payeezyRequest.post(transactionRequest));
 //        assertNotNull("Response is null ",response);
 //        assertNull("Error in response",response.getError());
 //        log.info("Transaction Tag:{} Transaction id:{}",response.getTransactionTag(),response.getTransactionId());

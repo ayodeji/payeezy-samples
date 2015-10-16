@@ -39,12 +39,15 @@ import io.pivotal.payeezy.TransactionResponse;
 public class PayeezyRequest {
 	
 	@Autowired
+	ObjectMapper objectMapper;
+	
+	@Autowired
 	Credentials credentials;
 	
 	@Autowired
 	RestTemplate restTemplate;
 	
-	// private static Logger logger = Logger.getLogger(PayeezyRequest.class);
+	private static Logger logger = Logger.getLogger(PayeezyRequest.class);
 
 	public PayeezyRequest(){
 		
@@ -120,7 +123,6 @@ public class PayeezyRequest {
 			returnMap.put(HeaderField.AUTHORIZE, getMacValue(returnMap));
 
 		} catch (NoSuchAlgorithmException e) {
-			// logger.error(e.getMessage());
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		return returnMap;
@@ -128,7 +130,6 @@ public class PayeezyRequest {
 	
     private String getJSONObject(Object data) throws IOException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         OutputStream stream = new BufferedOutputStream(byteStream);
         JsonGenerator jsonGenerator = objectMapper.getFactory().createGenerator(stream, JsonEncoding.UTF8);
@@ -139,12 +140,10 @@ public class PayeezyRequest {
     }
 
     
-	public String post(TransactionRequest transactionRequest) {
+	public TransactionResponse post(TransactionRequest transactionRequest) {
 		HttpEntity<TransactionRequest> request = null;
 		try {
 			String payload=getJSONObject(transactionRequest);
-			System.out.println("*** Payload: " + payload);
-			System.out.println("*** trans: " + transactionRequest.toString());
 			request = new HttpEntity<TransactionRequest>(transactionRequest, getHttpHeader(payload));
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -154,20 +153,12 @@ public class PayeezyRequest {
 
 		ResponseEntity<TransactionResponse> response = null;
 		try {
-//			logger.info("URL: " + url);
-//			logger.info("Headers: " + request.getHeaders().toString());
-//			logger.info("Body: " + request.getBody().toString());
-//			logger.info("Request: " + request.toString());
-			restTemplate = new RestTemplate();
+
 			response = restTemplate.exchange(url, HttpMethod.POST, request,
 					TransactionResponse.class);
-//			logger.info("Response Header: " + response.getHeaders());
-//			logger.info("Response Body: " + response.getBody());
-			return response.toString();
 		} catch (Exception e) {
-//			logger.error("Response Error: " + e.getMessage());
-			return e.getMessage();
+			logger.error("Response Error: " + e.getMessage());
 		}
+		return response.getBody();
 	}
-
 }

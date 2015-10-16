@@ -2,11 +2,13 @@ package io.pivotal.payeezy;
 
 import java.util.ArrayList;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class TransactionResponse {
+public class TransactionResponse extends ResourceSupport {
 
     /**
      * {"method":"credit_card","amount":"1100","currency":"USD","avs":"Z","cvv2":"I",
