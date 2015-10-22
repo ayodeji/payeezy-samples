@@ -1,51 +1,36 @@
 package io.pivotal.payeezy;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
+
+import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = PayeezyGenericsApplication.class)
+@SpringApplicationConfiguration(classes = PayeezyApplication.class)
 public class PayeezyGenericsApplicationTests {
-	
+
 	@Autowired
-	RestTemplate restTemplate;
-	
-	@Autowired
-	Credentials credentials;
-	
-	@Autowired
-	PayeezyRequest payeezyRequest;
-	
-	private static Logger logger = Logger.getLogger(PayeezyGenericsApplicationTests.class);
+    PayeezyClient payeezyClient;
 
 	
-	
-	@Test
-	public void contextLoads() {
-	}
-
     @Test
     public void makeCreditCardTransaction()throws Exception {
-        assertNotNull("RESTTemplate is null:", restTemplate);
-        assertNotNull("PayeezyRequest is null:", payeezyRequest);
-        TransactionRequest transactionRequest = getPrimaryTransaction();
-        System.out.println("Credentials: " + credentials.toString());
-        logger.info(payeezyRequest.post(transactionRequest));
-//        assertNotNull("Response is null ",response);
-//        assertNull("Error in response",response.getError());
-//        log.info("Transaction Tag:{} Transaction id:{}",response.getTransactionTag(),response.getTransactionId());
+        TransactionRequest request = createPrimaryTransaction();
+        ResponseEntity<TransactionResponse> responseEntity = this.payeezyClient.post(request);
+        TransactionResponse response = responseEntity.getBody();
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertEquals("approved", response.getTransactionStatus());
     }
     
-    private TransactionRequest getPrimaryTransaction() {
+    private TransactionRequest createPrimaryTransaction() {
         TransactionRequest request=new TransactionRequest();
         request.setAmount("1100");
         request.setCurrency("USD");

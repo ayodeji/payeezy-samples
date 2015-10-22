@@ -274,4 +274,29 @@ public class TransactionResponse extends ResourceSupport {
     }
 */
 
+	@Override
+	public String toString() {
+		return "TransactionResponse{" +
+				"transactionStatus='" + transactionStatus + '\'' +
+				", validationStatus='" + validationStatus + '\'' +
+				", transactionType='" + transactionType + '\'' +
+				", transactionId='" + transactionId + '\'' +
+				", transactionTag='" + transactionTag + '\'' +
+				", method='" + method + '\'' +
+				", amount='" + amount + '\'' +
+				", currency='" + currency + '\'' +
+				", avs='" + avs + '\'' +
+				", cvv2='" + cvv2 + '\'' +
+				", token=" + token +
+				", card=" + card +
+				", error=" + error +
+				", correlationID='" + correlationID + '\'' +
+				", bankResponseCode='" + bankResponseCode + '\'' +
+				", bankResponseCode2='" + bankResponseCode2 + '\'' +
+				", bankMessage='" + bankMessage + '\'' +
+				", exactResponseCode='" + exactResponseCode + '\'' +
+				", exactMessage='" + exactMessage + '\'' +
+				'}';
+	}
+
 }
