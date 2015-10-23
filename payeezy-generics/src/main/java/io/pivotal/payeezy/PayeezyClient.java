@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
@@ -19,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 
 
 public class PayeezyClient {
+	
+	private static Logger logger = Logger.getLogger(PayeezyClient.class);
 
 	private static Charset UTF_8 = Charset.forName("UTF-8");
 
@@ -26,6 +29,8 @@ public class PayeezyClient {
 	private final RestTemplate restTemplate;
 
 	private final String transactionsUrl;
+	
+	private final String secondaryTransactionUrl;
 
 
 	public PayeezyClient(Credentials credentials, String transactionsUrl) {
@@ -34,14 +39,19 @@ public class PayeezyClient {
 		this.restTemplate = new RestTemplate();
 		this.restTemplate.setInterceptors(interceptors);
 		this.transactionsUrl = transactionsUrl;
+		this.secondaryTransactionUrl = this.transactionsUrl + "/{id}";
 	}
-
 
 	public ResponseEntity<TransactionResponse> post(TransactionRequest request) {
 		return this.restTemplate.postForEntity(this.transactionsUrl, request, TransactionResponse.class);
 	}
 
-
+	public ResponseEntity<TransactionResponse> post(TransactionRequest request, String id) {
+		logger.info("Secondary Transaction: " + this.secondaryTransactionUrl + request.toString());
+		return this.restTemplate.postForEntity(this.secondaryTransactionUrl, request, 
+				TransactionResponse.class, id);
+	}
+	
 	/**
 	 * Adds headers required for Payeezy transactions.
 	 */

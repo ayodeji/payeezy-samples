@@ -21,52 +21,89 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class CreditCardPaymentsController {
 	 
 	private static Logger logger = Logger.getLogger(CreditCardPaymentsController.class);
-
-	@Autowired
-	Environment env;
 	
 	@Autowired
-	PayeezyRequest payeezyRequest;
+	PayeezyClient payeezyClient;
 	
 	@Autowired
 	SecondaryTransactionRepository secondaryTransactionRepository;
-
-    @RequestMapping("/")
-    String index(){
-        return "form";
-    }
-
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(Model model) {
+	@RequestMapping(value = "/payment", method = RequestMethod.GET)
+	public String showForm(Model model) {
 		model.addAttribute("transactionFormInput", new TransactionFormInput());
         model.addAttribute("responseMessage", "Enter data and hit Submit");
 		return "form";
 	}
 	
-    @RequestMapping(value="/", method=RequestMethod.POST)
-    public String greetingSubmit(@ModelAttribute TransactionFormInput transactionFormInput, Model model) {
+    @RequestMapping(value="/payment", method=RequestMethod.POST)
+    public String submitForm(TransactionFormInput transactionFormInput, Model model) {
     	logger.info("TransactionFormInput: " + transactionFormInput.toString());
-    	
-        TransactionRequest request= transactionFormInput.toTransactionRequest();
-         
-        Credentials credentials = new Credentials(env.getProperty("api_key"),
-        		env.getProperty("api_secret"),
-        		env.getProperty("merchant_token"));
-        String url = env.getProperty("transactions_url");
-        PayeezyClient payeezyClient = new PayeezyClient(credentials, url);
-        logger.info("PayeezyClient: " + request.toString());
-        ResponseEntity<TransactionResponse> responseEntity = payeezyClient.post(request);
-        //TransactionResponse response = responseEntity.getBody();
+    	ResponseEntity<TransactionResponse> responseEntity = null;
+    	TransactionRequest request= transactionFormInput.toTransactionRequest();
+    	if(transactionFormInput.getTransactionType().equalsIgnoreCase("VOID")) {
+    		// Void Transaction
+    		responseEntity = voidTransaction(request);
+    	}
+    	else {
+    		// Primary transaction
+    		responseEntity = payeezyClient.post(request); 
+    	}
         HttpStatus httpStatus = responseEntity.getStatusCode();
         String responseMessage = responseEntity.getBody().getExactMessage();
         logger.info("Status Code: " + responseEntity.getStatusCode());
         
         model.addAttribute("httpStatus", httpStatus.toString());
         model.addAttribute("responseMessage", responseMessage);
-        return "form";
+        return "redirect:/payment";
     }
     
+    private ResponseEntity<TransactionResponse> voidTransaction(TransactionRequest request){
+        TransactionResponse response = null;
+        ResponseEntity<TransactionResponse> responseEntity = null;
+        
+        TransactionResponse secondaryResponse = null;
+        ResponseEntity<TransactionResponse> secondaryResponseEntity = null;
+        
+		try {
+	        responseEntity = payeezyClient.post(request);
+	        response = responseEntity.getBody();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+        if(response.getError()==null) {
+        	TransactionRequest secondaryRequest = new TransactionRequest();
+            String id = response.getTransactionId();
+            String paymentMethod = response.getMethod(); //"credit_card";
+            String amount = response.getAmount();
+            String currency = response.getCurrency();
+            String transactionTag = response.getTransactionTag();
+ 
+            
+            secondaryRequest.setCurrency(currency);
+            secondaryRequest.setPaymentMethod(paymentMethod);
+            secondaryRequest.setId(id);
+            secondaryRequest.setTransactionTag(transactionTag);
+            secondaryRequest.setAmount(amount);
+            secondaryRequest.setTransactionType("VOID");
+            
+            SecondaryTransaction secondaryTransaction = new SecondaryTransaction(id, paymentMethod, amount, currency, transactionTag);
+            SecondaryTransaction savedSecondaryTransaction = secondaryTransactionRepository.save(secondaryTransaction);
+            logger.info("Saved secondary transaction is: " + savedSecondaryTransaction.toString());
+            
+            try {
+            	secondaryResponseEntity = payeezyClient.post(secondaryRequest, id);
+            	secondaryResponse = responseEntity.getBody();
+                logger.info("Transaction Tag:{} Transaction id:{}" + secondaryResponse.getTransactionTag() + secondaryResponse.getTransactionId());
+                logger.info("Response: " + secondaryResponse.getExactResponseCode() + " " + secondaryResponse.getExactMessage());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        return secondaryResponseEntity;
+    }
+    /*
 	@RequestMapping(value = "/voidTransaction", method = RequestMethod.GET)
 	public void voidTransaction(Model model) {
     	logger.info("+++++++++++++++++++++++++++++++++++++ start ++++++++++++++++++");
@@ -83,6 +120,8 @@ public class CreditCardPaymentsController {
         logger.info("Primary Transaction Response: " + response);
         logger.info("Transaction Tag:{} Transaction id:{}" + response.getTransactionTag() + response.getTransactionId());
 
+        
+        
         if(response.getError()==null) {
             req=getSecondaryTransaction();
             String id = response.getTransactionId();
@@ -145,36 +184,5 @@ public class CreditCardPaymentsController {
         trans.setId("07698G");
         return trans;
     }
-    
-
-
-//	@RequestMapping(value = "/transaction", method = RequestMethod.POST)
-//	public String transactionSubmit(
-//			@ModelAttribute TransactionFormInput transactionFormInput, Model model) {
-//		logger.info("TransactionFormInput: " + transactionFormInput.toString());
-//		// model.addAttribute("greeting", transactionFormInput);
-//		return "welcome";
-//	}
-	
-//	private TransactionRequest getDefaultPrimaryTransaction() {
-//		TransactionRequest request = new TransactionRequest();
-//		request.setAmount("42.00");
-//		request.setCurrency("USD");
-//		request.setPaymentMethod("credit_card");
-//		request.setTransactionType(TransactionType.PURCHASE.name());
-//		Card card = new Card();
-//		card.setCvv("123");
-//		card.setExpiryDt("1219");
-//		card.setName("John Doe");
-//		card.setType("visa");
-//		card.setNumber("4788250000028291");
-//		request.setCard(card);
-//		Address address = new Address();
-//		request.setBilling(address);
-//		address.setState("CA");
-//		address.setAddressLine1("3495 Deer Creek Rd");
-//		address.setZip("94304");
-//		address.setCountry("US");
-//		return request;
-//	}
+    */
 }

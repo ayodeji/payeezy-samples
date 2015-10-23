@@ -59,8 +59,32 @@ public class PayeezyGenericsApplicationTests {
         return request;
     }
     
-    
-    
+    @Test
+    public void doVoidPayment2() throws Exception {
+    	logger.info("+++++++++++++++++++++++++++++++++++++ start ++++++++++++++++++");
+
+        TransactionRequest request = createPrimaryTransaction();
+        System.out.println("request: " + request.toString());
+        ResponseEntity<TransactionResponse> responseEntity = this.payeezyClient.post(request);
+        TransactionResponse response = responseEntity.getBody();
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertEquals("approved", response.getTransactionStatus());    	
+        
+        TransactionRequest trans=new TransactionRequest();
+        trans.setPaymentMethod(response.getMethod());
+        trans.setAmount(response.getAmount());
+        trans.setCurrency(response.getCurrency());
+        trans.setTransactionTag(response.getTransactionTag());
+        trans.setId(response.getTransactionId());
+        trans.setTransactionType("VOID");
+        
+        logger.info("Secondary Request: " + trans);
+        responseEntity = this.payeezyClient.post(trans, response.getTransactionId());
+        logger.info("Secondary Response: " + responseEntity.getBody().toString());
+    	logger.info("+++++++++++++++++++++++++++++++++++++ end ++++++++++++++++++");
+
+    }
+    /*
     @Test
     public void doVoidPayment()throws Exception {
     	logger.info("+++++++++++++++++++++++++++++++++++++ start ++++++++++++++++++");
@@ -75,6 +99,7 @@ public class PayeezyGenericsApplicationTests {
             req.setId(response.getTransactionId());
             req.setTransactionTag(response.getTransactionTag());
             req.setAmount(response.getAmount());
+            logger.info("SecondaryRequest: " + req.toString());
             response=payeezyRequest.voidTransaction(req);
             assertNotNull("Response is null ",response);
             assertNull(response.getError());
@@ -94,7 +119,7 @@ public class PayeezyGenericsApplicationTests {
         trans.setId("07698G");
         return trans;
     }
-    
+    */
 
     
 }

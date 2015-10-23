@@ -6,6 +6,7 @@ import io.pivotal.payeezy.TransactionRequest;
 import io.pivotal.payeezy.TransactionType;
 
 public class TransactionFormInput {
+	
 	private String name;
 	private String currency;
 	private String amount;
@@ -129,11 +130,17 @@ public class TransactionFormInput {
 	}
 
 	public String getTransactionType() {
+		return transactionType;
+		/*
 		String tt = "AUTHORIZE";
-		if(this.transactionType.equalsIgnoreCase("2")){
+		if(this.transactionType.equals("2")){
 			tt = "PURCHASE";
 		}
+		else if(this.transactionType.equals("3")){
+			tt = "VOID";
+		}
 		return tt;
+		*/
 	}
 
 	public void setTransactionType(String transactionType) {
