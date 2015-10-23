@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Payeezy Samples</title>
+         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        
+
+    <link href="../static/css/main.css" th:href="@{css/main.css}" rel="stylesheet" media="screen"></link>  
+        <link href='https://d1fto35gcfffzn.cloudfront.net/images/favicon.ico' rel='shortcut icon' type='image/vnd.microsoft.icon'></link>
+    </head>
+    <body>
+            <p></p>
+<div align="center">
+<img src="../static/images/first_data.png" th:src="@{images/first_data.png}" style="float: left; width: 40%; margin-right: 1%; margin-bottom: 0.5em;" />
+<img src="../static/images/pivotal.png" th:src="@{images/pivotal.png}" style="float: right; width: 40%; margin-right: 1%; margin-bottom: 0.5em;" />
+</div>
+<p />
+    <form action="#" th:action="@{/}" th:object="${transactionFormInput}" method="post">
+
+	    <p th:text="'Response Code, ' + ${responseMessage} + '!'" />
+
+<fieldset>
+<legend>Credit Card</legend><br/>
+<label for="txtName" style="float: left">Name:</label><input type="text" name="name" size="20" style="float: left" /><p />
+<label for="txtAmount" style="float: left">Amount:</label><input type="text" name="amount" size="20" style="float: left" />
+<input type="text" name="currency" style="float: right" size="20" /><label for="txtCurrency" style="float: right">Currency:</label><p />
+
+<label for="txtNumber" style="float: left">Credit Card Number:</label><input type="text" name="number" style="float: left"size="20" /><p />
+<label for="txt3DigitCVV">3 Digit CVV:</label><input type="text" name="threeDigitCvv" size="5" /><p />
+<label for="txtExpiryDt">Expiry Date (mmyy):</label><input type="text" name="expiryDt" size="20" /><p />
+Visa:<input type="radio" name="type" value="visa" checked="CHECKED" />
+Mastercard:<input type="radio" name="type" value="mastercard" />
+American Express:<input type="radio" name="type" value="american express" /><p />
+</fieldset>
+<fieldset>
+<legend>Transaction Type</legend>
+Authorize:<input type="radio" name="transactionType" value="AUTHORIZE" checked="CHECKED" />
+Purchase:<input type="radio" name="transactionType" value="PURCHASE" /> 
+
+</fieldset>
+<fieldset>
+<legend>Address:</legend><br/>
+<label for="txtStreet">Street:</label><input type="text" name="street" size="20" /><p />
+<label for="txtCity">City:</label><input type="text" name="city" size="20" /><p />
+<label for="txtState">State:</label><input type="text" name="state" size="20" /><p />
+<label for="txtZip">Zip:</label><input type="text" name="zip" size="20" /><p />
+<label for="txtCountry">Country:</label><input type="text" name="country" size="20" /><p />
+
+</fieldset>
+	<hr />
+			<input type="submit" id="submitButton" value="Submit" size='240' /> <br />
+
+	</form>
+</body>
+</html>

@@ -1,20 +1,25 @@
 package io.pivotal.payeezy;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PayeezyApplication.class)
 public class PayeezyGenericsApplicationTests {
+	
+	private static Logger logger = Logger.getLogger(PayeezyGenericsApplicationTests.class);
 
 	@Autowired
     PayeezyClient payeezyClient;
@@ -23,6 +28,7 @@ public class PayeezyGenericsApplicationTests {
     @Test
     public void makeCreditCardTransaction()throws Exception {
         TransactionRequest request = createPrimaryTransaction();
+        System.out.println("request: " + request.toString());
         ResponseEntity<TransactionResponse> responseEntity = this.payeezyClient.post(request);
         TransactionResponse response = responseEntity.getBody();
 
@@ -52,4 +58,43 @@ public class PayeezyGenericsApplicationTests {
         //request.setTa_token(null);
         return request;
     }
+    
+    
+    
+    @Test
+    public void doVoidPayment()throws Exception {
+    	logger.info("+++++++++++++++++++++++++++++++++++++ start ++++++++++++++++++");
+    	RestTemplate restTemplate = new RestTemplate();
+    	PayeezyRequest payeezyRequest = new PayeezyRequest();
+        TransactionRequest req=createPrimaryTransaction();
+        
+        TransactionResponse response=payeezyRequest.purchaseTransaction(req);
+
+        if(response.getError()==null) {
+            req=getSecondaryTransaction();
+            req.setId(response.getTransactionId());
+            req.setTransactionTag(response.getTransactionTag());
+            req.setAmount(response.getAmount());
+            response=payeezyRequest.voidTransaction(req);
+            assertNotNull("Response is null ",response);
+            assertNull(response.getError());
+            logger.info("Transaction Tag:{} Transaction id:{}" + response.getTransactionTag() + response.getTransactionId());
+            logger.info("Response: " + response.getExactResponseCode() + " " + response.getExactMessage());
+
+        }
+        logger.info("++++++++++++++++++++++++++++++++++++++ end +++++++++++++++++");
+    }
+    
+    private TransactionRequest getSecondaryTransaction() {
+        TransactionRequest trans=new TransactionRequest();
+        trans.setPaymentMethod("credit_card");
+        trans.setAmount("0.00");
+        trans.setCurrency("USD");
+        trans.setTransactionTag("349990997");
+        trans.setId("07698G");
+        return trans;
+    }
+    
+
+    
 }
