@@ -5,7 +5,8 @@ To call the Payeezy API, you will need credentials like
 * API Key
 * Merchant Token
 * Merchant Id
-* The credentials can be got by registering with the Payeezy Developer Portal at developer.payeezy.com
+
+The credentials can be got by registering with the Payeezy Developer Portal at developer.payeezy.com
 
 ## Types of Payeezy Requests implemented
 These samples describe calling two types of Payeezy requests
