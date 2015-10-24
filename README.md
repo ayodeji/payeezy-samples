@@ -49,8 +49,10 @@ For an example, please see `voidTransaction` [here](https://github.com/nadkau-pi
 To build your payeezy application, you may choose to leverage a cloud native platform like Pivotal Cloud Foundry (PCF) to avail of a host of services like MySQL, RabbitMQ, Redis etc. `credit-card-transactions` uses Spring Boot and calls the ClearDB MySQL Database service on the Pivotal's public deployment of PCF, called Pivotal Web Services (PWS)
 ### Spring Boot, Cloud Foundry and Data Services
 To Capture and Reverse Payment requests, this application first issues a Cardit Card Payment request (Primary Transaction); stores the salient values from the `ResponseEntity` of the Primary Transaction into a database; and finally, retrieves the values from the database to issue a Secondary Transaction.
+
 Notice, however, that the **code does not define a `DataSource` at all**. When run locally, if `H2` is on the classpath, Spring Boot creates the `H2` embedded `Datasource` for you.
 When deployed to a Cloud Native Platform like Pivotal Cloud Foundry, the Cloud Foundry buildpack will detect a database service binding and create a `DataSource` for you. If you add Spring Cloud Connectors as well, your app will also work in other cloud platforms, as long as you include a connector.
+
 To run this application,
 1. Git clone this repository
 2. Run `mvn package`
