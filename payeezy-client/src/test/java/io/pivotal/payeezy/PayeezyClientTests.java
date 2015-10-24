@@ -8,11 +8,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -61,8 +58,6 @@ public class PayeezyClientTests {
     
     @Test
     public void voidPayment() throws Exception {
-    	logger.info("+++++++++++++++++++++++++++++++++++++ start ++++++++++++++++++");
-
         TransactionRequest request = createPrimaryTransaction();
         System.out.println("request: " + request.toString());
         ResponseEntity<TransactionResponse> responseEntity = this.payeezyClient.post(request);
@@ -81,45 +76,6 @@ public class PayeezyClientTests {
         logger.info("Secondary Request: " + trans);
         responseEntity = this.payeezyClient.post(trans, response.getTransactionId());
         logger.info("Secondary Response: " + responseEntity.getBody().toString());
-    	logger.info("+++++++++++++++++++++++++++++++++++++ end ++++++++++++++++++");
-
     }
-    /*
-    @Test
-    public void doVoidPayment()throws Exception {
-    	logger.info("+++++++++++++++++++++++++++++++++++++ start ++++++++++++++++++");
-    	RestTemplate restTemplate = new RestTemplate();
-    	PayeezyRequest payeezyRequest = new PayeezyRequest();
-        TransactionRequest req=createPrimaryTransaction();
-        
-        TransactionResponse response=payeezyRequest.purchaseTransaction(req);
 
-        if(response.getError()==null) {
-            req=getSecondaryTransaction();
-            req.setId(response.getTransactionId());
-            req.setTransactionTag(response.getTransactionTag());
-            req.setAmount(response.getAmount());
-            logger.info("SecondaryRequest: " + req.toString());
-            response=payeezyRequest.voidTransaction(req);
-            assertNotNull("Response is null ",response);
-            assertNull(response.getError());
-            logger.info("Transaction Tag:{} Transaction id:{}" + response.getTransactionTag() + response.getTransactionId());
-            logger.info("Response: " + response.getExactResponseCode() + " " + response.getExactMessage());
-
-        }
-        logger.info("++++++++++++++++++++++++++++++++++++++ end +++++++++++++++++");
-    }
-    
-    private TransactionRequest getSecondaryTransaction() {
-        TransactionRequest trans=new TransactionRequest();
-        trans.setPaymentMethod("credit_card");
-        trans.setAmount("0.00");
-        trans.setCurrency("USD");
-        trans.setTransactionTag("349990997");
-        trans.setId("07698G");
-        return trans;
-    }
-    */
-
-    
 }
