@@ -1,4 +1,8 @@
 # payeezy-samples
+payeezy-samples contains two projects
+* `payeezy-client`
+* `credit-card-transactions`
+
 payeezy-samples provides a layer of abstraction to call the [Payeezy Direct API for Java](https://github.com/payeezy/payeezy_direct_API/tree/master/payeezy_java). The `payeezy-client` employs best practices using the Spring Framework to call the [Payeezy Credit Card Transactions API](https://developer.payeezy.com/creditcardpayment/apis/post/transactions) and the [Payeezy Capture or Reverse a Transaction](https://developer.payeezy.com/capturereversepayment/apis/post/transactions/%7Bid%7D)  
 
 ## `payeezy-samples` with Spring Boot
@@ -14,7 +18,9 @@ The primary goals of Spring Boot are:
 
 Spring Boot does not generate code and there is absolutely no requirement for XML configuration.
 
-To call the Payeezy API, you will need to [register with the Payeezy Developer Portal](https://developer.payeezy.com/user/register) and gain credentials like
+A Quick Start Guide to Spring Boot is available [here](http://projects.spring.io/spring-boot/)
+
+To call the Payeezy API, you will need to [register and create a new user account with the Payeezy Developer Portal](https://developer.payeezy.com/user/register). Registering with the portal, gives you credentials to call the Payeezy API. The credentials include
 * API Secret
 * API Key
 * Merchant Token
@@ -23,30 +29,40 @@ To call the Payeezy API, you will need to [register with the Payeezy Developer P
 ## Types of Payeezy Requests implemented
 These samples describe calling two types of Payeezy requests
 
-1. A primary credit card transaction like an AUTHORIZE or PURCHASE
+1. Credit Card Payments like an `AUTHORIZE` or `PURCHASE`
 
-2. A secondary transaction like a VOID, or REFUND. A secondary transaction requires calling the primary first.
+2. Capture and Reverse a payment like `VOID`, or `REFUND`. This is a two step process where a primary transaction like `AUTHORIZE` OR `PURCHASE` is called before making a Secondary Transaction like `VOID` or `REFUND`.
 
-## Make a Primary Transaction using the Payeezy API
-To make a Primary Transaction using the Payeezy API, 
+## Make a Credit Card Payments request using the Payeezy API
+To make a Credit Card Payments request (Primary Transaction) using the Payeezy API, 
 
-1. Create a new Credentials object (`new Credentials(key, secret, token);`)
+1. Create a new Credentials object 
 
-2. Create a PayeezyClient (`new PayeezyClient(new Credentials(key, secret, token), url);`). 
+`new Credentials(key, secret, token);`
+
+2. Create a PayeezyClient 
+
+`new PayeezyClient(new Credentials(key, secret, token), url);` 
+
 The url for credit card transactions is https://api-cert.payeezy.com/v1/transactions
 
-3. Create a TransactionRequest
+3. Create a `TransactionRequest`
 
-4. Call `payeezyClient.post(transactionRequest)`
-For an example, please see `purchaseTransaction` in `payeezy-client/src/test/java/io/pivotal/payeezy/PayeezyClientTests.java`
+4. Call 
 
-## To make a Secondary Transaction
+`payeezyClient.post(transactionRequest)`
 
+For an example, please see `purchaseTransaction` [here](https://github.com/nadkau-pivotal/payeezy-samples/blob/master/payeezy-client/src/test/java/io/pivotal/payeezy/PayeezyClientTests.java)
+
+## To Capture and Reverse a Payment
+To Capture and Reverse a payment made using Credit Card Payments API
 1. Make a Primary Transaction as described above
 
-2. If the Primary Transaction succeeds, call `post` again, with a `TransactionRequest` and the `TransactionId` from the Primary Transaction (`payeezyClient.post(transactionRequest, id);`)
-For an example, please see `voidTransaction` in `payeezy-client/src/test/java/io/pivotal/payeezy/PayeezyClientTests.java`
+2. If the Primary Transaction succeeds, call `post` again, with a `TransactionRequest` and the `TransactionId` from the Primary Transaction 
 
+`payeezyClient.post(transactionRequest, id);`
+
+For an example, please see `voidTransaction` [here](https://github.com/nadkau-pivotal/payeezy-samples/blob/master/payeezy-client/src/test/java/io/pivotal/payeezy/PayeezyClientTests.java)
 
 # credit-card-transactions
 This repository contains code of a Spring Boot application that calls the Payeezy API.
@@ -56,7 +72,10 @@ To run this application,
 
 2. Run `mvn package`
 
-3. Run `java -jar target/credit-card-payments-0.0.1-SNAPSHOT.jar`. Alternatively, you may deploy the jar to a Cloud Native Platform like Pivotal Cloud Foundry by issuing a `cf push`. For a detailed tutorial on deploying to Pivotal Cloud Foundry, please see
+3. Run `java -jar target/credit-card-payments-0.0.1-SNAPSHOT.jar`.
+Alternatively, you may deploy the jar to a Cloud Native Platform like Pivotal Cloud Foundry by issuing a 
+`cf push`. 
+For a detailed tutorial on deploying to Pivotal Cloud Foundry, please see the [Developer Guide](http://docs.run.pivotal.io/devguide/deploy-apps/deploy-app.html) in the Pivotal Web Services Documentation.
 
 ## Deploy to Pivotal Cloud Foundry
 ### Setup Your PWS Account 
@@ -82,4 +101,3 @@ For Payeezy Secondary Transaction requests, this application first issues a Prim
 Notice, however, that the code does not define a `DataSource` at all. When run locally, if `H2` is on the classpath, Spring Boot creates the `H2` embedded `Datasource` for you.
 When deployed to a Cloud Native Platform like Pivotal Cloud Foundry, the Cloud Foundry buildpack will detect a database service binding and create a `DataSource` for you. If you add Spring Cloud Connectors as well, your app will also work in other cloud platforms, as long as you include a connector.
 
-Your first and simplest option is to simply do nothing: do not define a DataSource at all but put H2 on the classpath. Spring Boot will create the H2 embedded DataSource for you when you run locally. The Cloud Foundry buildpack will detect a database service binding and create a DataSource for you when you run in the cloud. If you add Spring Cloud Connectors as well, your app will also work in other cloud platforms, as long as you include a connector. That might be good enough if you just want to get something working.
