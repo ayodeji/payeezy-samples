@@ -1,12 +1,24 @@
 # payeezy-samples
-This repository contains sample applications that call the Payeezy API.
-To call the Payeezy API, you will need credentials like
+payeezy-samples provides a layer of abstraction to call the [Payeezy Direct API for Java](https://github.com/payeezy/payeezy_direct_API/tree/master/payeezy_java). The `payeezy-client` employs best practices using the Spring Framework to call the [Payeezy Credit Card Transactions API](https://developer.payeezy.com/creditcardpayment/apis/post/transactions) and the [Payeezy Capture or Reverse a Transaction](https://developer.payeezy.com/capturereversepayment/apis/post/transactions/%7Bid%7D)  
+
+## `payeezy-samples` with Spring Boot
+These samples have been developed using Spring Boot. 
+Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run". Boot takes an opinionated view of the Spring platform and third-party libraries so you can get started with minimum fuss. Most Spring Boot applications need very little Spring configuration.
+
+Since its first milestone release in August 2013, Spring Boot has witnessed an explosive growth in its adoption. Last month alone saw over 1.6M downloads. A [blog article by James Watters](http://blog.pivotal.io/pivotal-cloud-foundry/features/mapping-the-cloud-native-journey), VP/GM Cloud Platform Group at Pivotal, describes Spring Boot’s applicability to Cloud Native Application Architectures.
+
+The primary goals of Spring Boot are:
+* To provide a radically faster and widely accessible ‘getting started’ experience for all Spring development
+* To be opinionated out of the box, but get out of the way quickly as requirements start to diverge from the defaults
+* To provide a range of non-functional features that are common to large classes of projects (e.g. embedded servers, security, metrics, health checks, externalized configuration)
+
+Spring Boot does not generate code and there is absolutely no requirement for XML configuration.
+
+To call the Payeezy API, you will need to [register with the Payeezy Developer Portal](https://developer.payeezy.com/user/register) and gain credentials like
 * API Secret
 * API Key
 * Merchant Token
 * Merchant Id
-
-The credentials can be got by registering with the Payeezy Developer Portal at developer.payeezy.com
 
 ## Types of Payeezy Requests implemented
 These samples describe calling two types of Payeezy requests
