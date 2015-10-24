@@ -1,11 +1,11 @@
 # payeezy-samples
 This repository contains sample applications that call the Payeezy API.
-To call the Payeezy API, you will need credentials like those listed below
+To call the Payeezy API, you will need credentials like
 * API Secret
 * API Key
 * Merchant Token
 * Merchant Id
-The credentials can be got by registering with the Payeezy Developer Portal at developer.payeezy.com
+* The credentials can be got by registering with the Payeezy Developer Portal at developer.payeezy.com
 
 ## Types of Payeezy Requests implemented
 These samples describe calling two types of Payeezy requests
@@ -35,10 +35,10 @@ To run this application,
 
 ## Deploy to Pivotal Cloud Foundry
 ### Setup Your PWS Account 
-Pivotal Cloud Foundry allows you to deploy your applications either on a private virtualized environment like OpenStack or VMwareœôòùs vSphere and vCloud Air or a public deployment like AWS. Weœôòùll deploy the samples to Pivotalœôòùs public deployment of PCF, called Pivotal Web Services (PWS), on AWS. You can sign up for a 60 day free trial of PWS at run.pivotal.io. When you create a PWS account, you are provided with credentials to push, monitor and manage applications on PWS.
+Pivotal Cloud Foundry allows you to deploy your applications either on a private virtualized environment like OpenStack or VMwareÅ“Ã´Ã²Ã¹s vSphere and vCloud Air or a public deployment like AWS. WeÅ“Ã´Ã²Ã¹ll deploy the samples to PivotalÅ“Ã´Ã²Ã¹s public deployment of PCF, called Pivotal Web Services (PWS), on AWS. You can sign up for a 60 day free trial of PWS at run.pivotal.io. When you create a PWS account, you are provided with credentials to push, monitor and manage applications on PWS.
 
 ### Download, Install and Set Up the CF cli 
-Cloud Foundry provides a command-line tool called CF cli to seamlessly œôòüpushœôòý your applications to Pivotal Cloud Foundry. More information on downloading and installing the CF cli tool can be found [here](http://docs.run.pivotal.io/starting/#install-login). Once youœôòùve downloaded and installed the CF cli, you may login to PWS using the CF cli. Logging into PWS targets it for deployment of your applications.
+Cloud Foundry provides a command-line tool called CF cli to seamlessly Å“Ã´Ã²Ã¼pushÅ“Ã´Ã²Ã½ your applications to Pivotal Cloud Foundry. More information on downloading and installing the CF cli tool can be found [here](http://docs.run.pivotal.io/starting/#install-login). Once youÅ“Ã´Ã²Ã¹ve downloaded and installed the CF cli, you may login to PWS using the CF cli. Logging into PWS targets it for deployment of your applications.
 
 ## Deploy Your Application to Pivotal Cloud Foundry 
 Once you have downloaded and installed the CF cli, you are ready to push applications to Pivotal Cloud Foundry. 
@@ -48,7 +48,7 @@ To push applications to Pivotal Cloud Foundry, run:
 `cf push` provides several deployment options. To view these options, run:
 `cf push --help`
 
-You may also choose to set deployment parameters in a manifest file. To deploy applications with a manifest file, please see the section titled œôòüDeploying with Application Manifestsœôòý [here](http://docs.run.pivotal.io/devguide/deploy-apps/manifest.html). A detailed tutorial on deploying applications to Pivotal Cloud Foundry is available [here](http://docs.run.pivotal.io/devguide/deploy-apps/deploy-app.html).
+You may also choose to set deployment parameters in a manifest file. To deploy applications with a manifest file, please see the section titled "Deploying with Application Manifests" [here](http://docs.run.pivotal.io/devguide/deploy-apps/manifest.html). A detailed tutorial on deploying applications to Pivotal Cloud Foundry is available [here](http://docs.run.pivotal.io/devguide/deploy-apps/deploy-app.html).
 
 ## Spring Boot, Cloud Foundry and Data Services
 For Payeezy Secondary Transaction requests, this application first issues a Primary Transaction; stores the salient values from the `ResponseEntity` of the Primary Transaction into a database; and finally, retrieves the values from the database to issue a Secondary Transaction.
