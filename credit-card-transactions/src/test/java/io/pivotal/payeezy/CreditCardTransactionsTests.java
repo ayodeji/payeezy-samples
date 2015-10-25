@@ -2,7 +2,6 @@ package io.pivotal.payeezy;
 
 import static org.junit.Assert.assertEquals;
 import io.pivotal.payeezy.model.SecondaryTransaction;
-import io.pivotal.payeezy.model.TransarmorCard;
 import io.pivotal.payeezy.repository.SecondaryTransactionRepository;
 
 import org.junit.Test;

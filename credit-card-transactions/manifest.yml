@@ -1,6 +1,6 @@
 ---
 applications:
-- name: credit-card-payments 
+- name: credit-card-transactions 
   memory: 512M
-  host: credit-card-payments 
-  path: target/credit-card-payments-0.0.1-SNAPSHOT.jar
+  host: credit-card-transactions
+  path: target/credit-card-transactions-0.0.1-SNAPSHOT.jar

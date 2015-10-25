@@ -38,7 +38,7 @@ public class PayeezyClientTests {
         request.setAmount("1100");
         request.setCurrency("USD");
         request.setPaymentMethod("credit_card");
-        request.setTransactionType(TransactionType.PURCHASE.name());
+        request.setTransactionType("PURCHASE");
         Card card=new Card();
         card.setCvv("123");
         card.setExpiryDt("1219");
